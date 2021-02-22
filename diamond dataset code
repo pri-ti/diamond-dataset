@@ -1,0 +1,108 @@
+---
+title: "Diamond dataset"
+author: "Preeti Jha"
+date: "2/22/2021"
+output: html_document
+---
+
+
+```{r message=FALSE,warning=FALSE}
+library(tidyverse)
+library(dplyr)
+data(diamonds)
+glimpse(diamonds)
+#help(diamonds)
+```
+
+# 1. Number of diamonds  between 1 or more *carats* and less than 2 *carats*? 
+Ans There are 16906 diamonds between 1 or more carats and less than 2 carats
+
+```{r message=FALSE,warning=FALSE}
+diamonds%>% filter(carat >= 1 & carat < 2)%>%
+summarize(n=n())
+
+```
+
+
+# 2.Proportion of diamonds between 1 or more *carats* and less than 2 *carats*? 
+Ans There are .31 proportion between 1 carat or less and more than 2 carats of diamonds
+```{r message=FALSE,warning=FALSE}
+diamonds %>%  summarize(prop1_2 = mean( carat >= 1 & carat < 2 ))
+
+```
+
+
+# 3. Number of  diamonds having a *cut* of Good or Very Good?
+There are 16988 diamonds have a cut of good and very good
+
+```{r message=FALSE,warning=FALSE}
+diamonds %>% filter(cut == "Good" | cut == "Very Good") %>%
+    summarize(n=n())
+
+```
+
+# 4. Of the diamonds with *cut* of Good or Very Good,  proportion of diamonds between 1 or more *carats* and less than 2 *carats*? 
+Ans The proportion of good/verygood diamond is approx 32 %
+
+```{r message=FALSE,warning=FALSE}
+diamonds %>% filter(cut == "Good" | cut == "Very Good") %>%
+  summarize( prop_of_1_2_G_VG = mean( carat >= 1 & carat < 2 ))
+```
+
+# 5. Computing a new variable,  $volume = x*y*z$.  Make a scatterplot with $x = volume$ and $y = price$.  Removing any outliers.  Making another scatterplots with the color of the points showing the different values of the variable *cut*.  For the variable *cut*, which values of *cut* has the most expensive average price for diamonds between 1 and 2 carats
+
+
+```{r message=FALSE,warning=FALSE}
+diamonds %>% filter(cut == "Good" | cut == "Very Good") %>%
+    summarize(n=n())
+
+```
+
+
+**Scatterplot**
+```{r message=FALSE,warning=FALSE}
+diamonds %>% mutate(volume = x*y*z) %>%
+  ggplot(aes(x= volume, y = price)) +
+  geom_point()
+
+```
+**Scatterplot with removed outliers**
+```{r message=FALSE,warning=FALSE}
+diamonds %>% mutate(volume = x*y*z) %>%
+  filter(volume < 675) %>%
+  ggplot(aes(x= volume, y = price)) +
+  geom_point()
+
+
+```
+**Scatterplot with color for cut.**
+```{r message=FALSE,warning=FALSE}
+diamonds %>% mutate(volume = x*y*z) %>%
+  filter(volume < 675) %>%
+  ggplot(aes(x= volume, y = price, color = cut)) +
+  geom_point()
+
+
+```
+
+**Ideal is most expensive.**
+
+```{r message=FALSE,warning=FALSE}
+diamonds %>% mutate(volume = x*y*z) %>%
+  filter(volume < 675) %>%
+  filter(carat >= 1 & carat < 2 ) %>%
+  group_by(cut) %>%
+  summarize(n=n(), mean(price))
+```
+
+
+**In scatterplot of diamonds between 1 or more and less than 2 carats color of yellow appears the most which stands for ideal cut diamond.Hence it is most exoensive.**
+```{r message=FALSE,warning=FALSE}
+diamonds %>% mutate(volume = x*y*z) %>%
+  filter(volume < 675) %>%
+  filter(carat >= 1 & carat < 2 ) %>%
+  ggplot(aes(x= volume, y = price, color = cut)) +
+  geom_point()
+
+```
+
